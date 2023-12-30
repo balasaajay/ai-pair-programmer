@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+{% comment %} Check if user is authenticated or not. If not, direct user to login page. {% endcomment %}
+
+{% if response %}
+
+
+<pre>
+<code class='language-{{lang}} line-numbers'>
+{{response}}
+
+</code>
+  </pre>
+</br>
+<form method=POST action="{% url 'suggest' %}">
+    {% csrf_token %}
+<br/>
+
+<div class="mb-3">
+  <textarea class="form-control" name="input_code" placeholder="Have AI suggest code" rows="3"> {{ input_code }} </textarea>
+</div>
+<br/>
+<select class="form-select" name="lang">
+  <option selected>Select programming language</option>
+  {% for language in languages_list %}
+    <option value="{{ language }}">{{ language }}</option>
+  {% endfor %}
+</select>
+<br/>
+<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% else %}
+
+  <pre>
+<code class='language-python line-numbers'>
+if type == 'hello':
+  print("Hello World!")
+else:
+  print("Goodbye World!")
+</code>
+  </pre>
+</br>
+
+<form method=POST action="{% url 'suggest' %}">
+    {% csrf_token %}
+
+<br/>
+<div class="mb-3">
+  <textarea class="form-control" name="input_code" placeholder="Have AI suggest code" rows="3"></textarea>
+</div>
+<br/>
+<select class="form-select" name="lang">
+  <option selected>Select programming language</option>
+  {% for language in languages_list %}
+    <option value="{{ language }}">{{ language }}</option>
+  {% endfor %}
+</select>
+<br/>
+<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endif %}
+
+{% else %}
+<!-- Sign in page -->
+<div class="col-md-6 offset-mb-3">
+  <form method='POST' action={% url 'login' %}>
+    {% csrf_token %}
+      <!-- Email input -->
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter Username" name="username">
+        <br/>
+      </div>
+
+      <!-- Password input -->
+      <div class="form-group">
+        <input type="password" class="form-control" placeholder="Enter Password" name="password">
+        <br/>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+</div>
+
+{% endif %}
+{% endblock %}
